@@ -1,0 +1,35 @@
+@model HospitalSystem.Models.User
+@{
+    ViewData["Title"] = "Assign Specialization";
+}
+
+<h2>Assign Specialization to Doctor: @Model.FullName</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AssignSpecialization" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            
+            <div class="mb-3">
+                <label class="form-label">Specialization</label>
+                <select name="specializationId" class="form-select" asp-items="@(new SelectList(ViewBag.Specializations, "Id", "Name", Model.DoctorProfile?.SpecializationId))" required>
+                    <option value="">-- Select Specialization --</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Consultation Fee</label>
+                <input type="number" step="0.01" name="consultationFee" class="form-control" value="@Model.DoctorProfile?.ConsultationFee" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Bio / Notes</label>
+                <textarea name="bio" class="form-control">@Model.DoctorProfile?.Bio</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+            <a asp-action="Doctors" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

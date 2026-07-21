@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Medical2026</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HospitalSystem.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-heart-pulse fa-lg"></i> Medical2026
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 ms-4">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house-chimney"></i> Home</a>
+                        </li>
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-user-shield"></i> Admin Tools
+                                    </a>
+                                    <ul class="dropdown-menu shadow border-0" aria-labelledby="adminDropdown">
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index"><i class="fa-solid fa-chart-pie w-20px"></i> Dashboard Overview</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Departments"><i class="fa-solid fa-building w-20px"></i> Departments</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Specializations"><i class="fa-solid fa-microscope w-20px"></i> Specializations</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Doctors"><i class="fa-solid fa-user-doctor w-20px"></i> Doctors</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Patients"><i class="fa-solid fa-hospital-user w-20px"></i> Patients</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="AllAppointments"><i class="fa-solid fa-calendar-check w-20px"></i> Global Appointments</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            else if (User.IsInRole("Doctor"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="doctorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-stethoscope"></i> Doctor Workspace
+                                    </a>
+                                    <ul class="dropdown-menu shadow border-0" aria-labelledby="doctorDropdown">
+                                        <li><a class="dropdown-item" asp-controller="Doctor" asp-action="Index"><i class="fa-solid fa-calendar-day w-20px"></i> My Schedule</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Doctor" asp-action="MyPatients"><i class="fa-solid fa-users w-20px"></i> My Patients</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="Doctor" asp-action="Profile"><i class="fa-solid fa-id-card w-20px"></i> My Profile</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            else if (User.IsInRole("Patient"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Patient" asp-action="Index"><i class="fa-solid fa-bed-pulse"></i> My Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning fw-bold" asp-controller="Patient" asp-action="Book"><i class="fa-regular fa-calendar-check"></i> Book Appointment</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <li class="nav-item d-flex align-items-center me-3">
+                                <span class="text-white fw-bold"><i class="fa-regular fa-circle-user fa-lg me-1"></i> Hi, @User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-light text-primary fw-bold px-3 py-2 ms-2" style="border-radius:8px;" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning text-dark fw-bold px-3 ms-2 mt-1 mt-lg-0" style="border-radius:8px;" asp-controller="Account" asp-action="Register"><i class="fa-solid fa-user-plus"></i> Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container mt-4">
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top text-muted py-4 mt-5 bg-white">
+        <div class="container text-center">
+            <p class="mb-1 fw-bold text-dark">&copy; 2026 - Medical2026 Hospital System</p>
+            <small>Caring for life, one patient at a time.</small>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

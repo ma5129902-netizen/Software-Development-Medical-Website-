@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark"><i class="fa-solid fa-chart-pie text-primary me-2"></i> Admin Overview</h2>
+</div>
+
+<div class="row mb-5">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card bg-gradient-primary shadow">
+            <i class="fa-solid fa-building stat-icon"></i>
+            <h5 class="card-title">Departments</h5>
+            <h2 class="display-4">@ViewBag.TotalDepartments</h2>
+            <a asp-action="Departments" class="text-white text-decoration-none fw-bold mt-2 d-inline-block">Manage Departments <i class="fa-solid fa-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card bg-gradient-success shadow">
+            <i class="fa-solid fa-user-doctor stat-icon"></i>
+            <h5 class="card-title">Doctors</h5>
+            <h2 class="display-4">@ViewBag.TotalDoctors</h2>
+            <a asp-action="Doctors" class="text-white text-decoration-none fw-bold mt-2 d-inline-block">Manage Doctors <i class="fa-solid fa-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card bg-gradient-info shadow">
+            <i class="fa-solid fa-hospital-user stat-icon"></i>
+            <h5 class="card-title">Patients</h5>
+            <h2 class="display-4">@ViewBag.TotalPatients</h2>
+            <span class="text-white-50 fw-bold mt-2 d-inline-block">Registered System Users</span>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card bg-gradient-warning shadow">
+            <i class="fa-solid fa-calendar-check stat-icon"></i>
+            <h5 class="card-title">Appointments</h5>
+            <h2 class="display-4">@ViewBag.TotalAppointments</h2>
+            <span class="text-white-50 fw-bold mt-2 d-inline-block">Total Bookings Lifetime</span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-white border-bottom border-light pt-4 pb-3">
+                <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-bolt text-warning me-2"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-3">
+                    <a asp-action="CreateDepartment" class="btn btn-outline-primary btn-lg text-start"><i class="fa-solid fa-plus-circle w-20px me-2"></i> Add New Department</a>
+                    <a asp-action="CreateSpecialization" class="btn btn-outline-success btn-lg text-start"><i class="fa-solid fa-stethoscope w-20px me-2"></i> Add New Specialization</a>
+                    <a asp-action="Doctors" class="btn btn-outline-info btn-lg text-start"><i class="fa-solid fa-id-badge w-20px me-2"></i> Assign Specializations to Doctors</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100 border-0 bg-primary text-white text-center d-flex align-items-center justify-content-center p-5 rounded-4" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+            <div>
+                <i class="fa-solid fa-shield-halved fa-4x mb-3 text-warning"></i>
+                <h3 class="fw-bold">System Health Normal</h3>
+                <p class="opacity-75 mb-0">Database connected. Authentication active. APIs responsive.</p>
+            </div>
+        </div>
+    </div>
+</div>

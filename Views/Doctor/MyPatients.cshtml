@@ -1,0 +1,70 @@
+@model IEnumerable<HospitalSystem.Models.PatientProfile>
+@{
+    ViewData["Title"] = "My Patients";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="fa-solid fa-users text-primary me-2"></i> My Patients</h2>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card shadow-sm border-0 bg-white rounded-4 text-center p-5 mt-4">
+        <div class="card-body">
+            <i class="fa-solid fa-user-injured fa-5x text-muted opacity-50 mb-3"></i>
+            <h4 class="fw-bold text-dark">No Patients Yet</h4>
+            <p class="text-muted">You have not been assigned any patients.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var patient in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100 border-0 rounded-4 overflow-hidden">
+                    <div class="bg-primary text-white p-3 d-flex align-items-center">
+                        <div class="bg-white text-primary rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 50px; height: 50px; font-size: 1.5rem; font-weight: bold;">
+                            @((patient.User?.FullName?.Length > 0) ? patient.User.FullName.Substring(0, 1).ToUpper() : "?")
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">@patient.User?.FullName</h5>
+                            <small class="opacity-75">ID: #@patient.Id</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="text-muted small text-uppercase fw-bold"><i class="fa-solid fa-cake-candles me-1"></i> Date of Birth</span>
+                            <p class="fw-bold mb-0">@(patient.DateOfBirth?.ToString("MMM dd, yyyy") ?? "Not provided")</p>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-muted small text-uppercase fw-bold"><i class="fa-solid fa-venus-mars me-1"></i> Gender</span>
+                            <p class="fw-bold mb-0">@(patient.Gender ?? "Not provided")</p>
+                        </div>
+                        <hr class="opacity-25" />
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold"><i class="fa-solid fa-file-medical me-1"></i> Medical History</span>
+                            <div class="bg-light p-3 rounded-3 mt-2 small" style="max-height: 120px; overflow-y: auto;">
+                                @if (string.IsNullOrEmpty(patient.MedicalHistory))
+                                {
+                                    <span class="fst-italic text-muted">No medical history recorded.</span>
+                                }
+                                else
+                                {
+                                    @patient.MedicalHistory
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 p-3">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span><i class="fa-solid fa-phone me-1"></i> @(patient.User?.Phone ?? "No phone")</span>
+                            <span><i class="fa-solid fa-envelope me-1"></i> @(patient.User?.Email ?? "No email")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

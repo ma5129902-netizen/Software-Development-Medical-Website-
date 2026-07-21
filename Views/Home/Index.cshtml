@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="hero-section">
+    <h1><i class="fa-solid fa-heart-pulse"></i> Medical2026</h1>
+    <p>Experience world-class healthcare with our integrated offline management system. Seamlessly connect doctors, patients, and administration in one unified platform.</p>
+    
+    @if (!User.Identity!.IsAuthenticated)
+    {
+        <div class="mt-4">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-warning btn-lg px-5 py-3 me-3 text-dark fw-bold shadow-lg" style="border-radius:50px;">
+                <i class="fa-solid fa-user-plus"></i> Join Us Today
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg px-5 py-3 text-primary fw-bold shadow-lg" style="border-radius:50px;">
+                <i class="fa-solid fa-right-to-bracket"></i> Member Login
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="mt-4">
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Admin" asp-action="Index" class="btn btn-light btn-lg px-5 py-3 text-primary fw-bold shadow-lg" style="border-radius:50px;">
+                    <i class="fa-solid fa-chart-pie"></i> Enter Admin Dashboard
+                </a>
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                <a asp-controller="Doctor" asp-action="Index" class="btn btn-light btn-lg px-5 py-3 text-success fw-bold shadow-lg" style="border-radius:50px;">
+                    <i class="fa-solid fa-user-doctor"></i> Enter Doctor Dashboard
+                </a>
+            }
+            else if (User.IsInRole("Patient"))
+            {
+                <a asp-controller="Patient" asp-action="Book" class="btn btn-warning btn-lg px-5 py-3 me-3 text-dark fw-bold shadow-lg" style="border-radius:50px;">
+                    <i class="fa-regular fa-calendar-plus"></i> Book Appointment Now
+                </a>
+                <a asp-controller="Patient" asp-action="Index" class="btn btn-light btn-lg px-5 py-3 text-info fw-bold shadow-lg" style="border-radius:50px;">
+                    <i class="fa-solid fa-list-check"></i> My Appointments
+                </a>
+            }
+        </div>
+    }
+</div>
+
+<div class="row mt-5 pt-4">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <div class="text-primary mb-3"><i class="fa-solid fa-stethoscope fa-4x"></i></div>
+                <h4 class="card-title fw-bold">Expert Doctors</h4>
+                <p class="card-text text-muted">Consult with top specialists across multiple departments. Our doctors are highly qualified and experienced.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <div class="text-success mb-3"><i class="fa-solid fa-calendar-check fa-4x"></i></div>
+                <h4 class="card-title fw-bold">Easy Booking</h4>
+                <p class="card-text text-muted">A seamless, dynamic appointment booking system that saves your time. Choose your doctor and book instantly.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <div class="text-info mb-3"><i class="fa-solid fa-laptop-medical fa-4x"></i></div>
+                <h4 class="card-title fw-bold">Digital Records</h4>
+                <p class="card-text text-muted">All your medical history and appointments are tracked digitally, ensuring you never miss a follow-up.</p>
+            </div>
+        </div>
+    </div>
+</div>

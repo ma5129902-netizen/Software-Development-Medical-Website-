@@ -1,0 +1,73 @@
+@model HospitalSystem.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="auth-wrapper my-5">
+    <div class="col-md-8 col-lg-7">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Join Medical2026</h3>
+                <p class="mb-0 text-white-50">Create your account to access our services</p>
+            </div>
+            <div class="auth-body">
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FullName" class="form-label"><i class="fa-regular fa-id-card text-muted me-1"></i> Full Name</label>
+                            <input asp-for="FullName" class="form-control" placeholder="John Doe" />
+                            <span asp-validation-for="FullName" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Username" class="form-label"><i class="fa-regular fa-user text-muted me-1"></i> Username</label>
+                            <input asp-for="Username" class="form-control" placeholder="johndoe" />
+                            <span asp-validation-for="Username" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Password" class="form-label"><i class="fa-solid fa-lock text-muted me-1"></i> Password</label>
+                            <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                            <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"><i class="fa-solid fa-check-double text-muted me-1"></i> Confirm Password</label>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Role" class="form-label"><i class="fa-solid fa-users-gear text-muted me-1"></i> Role</label>
+                            <select asp-for="Role" class="form-select" asp-items="Html.GetEnumSelectList<HospitalSystem.Models.UserRole>()"></select>
+                            <span asp-validation-for="Role" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Email" class="form-label"><i class="fa-regular fa-envelope text-muted me-1"></i> Email (Opt)</label>
+                            <input asp-for="Email" class="form-control" placeholder="john@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Phone" class="form-label"><i class="fa-solid fa-phone text-muted me-1"></i> Phone (Opt)</label>
+                            <input asp-for="Phone" class="form-control" placeholder="+123456789" />
+                            <span asp-validation-for="Phone" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-4 shadow"><i class="fa-solid fa-paper-plane"></i> Create Account</button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-muted fw-bold">Already a member? <a asp-action="Login" class="text-primary text-decoration-none">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

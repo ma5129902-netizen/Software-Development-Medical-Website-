@@ -1,0 +1,51 @@
+@model IEnumerable<HospitalSystem.Models.Appointment>
+@{
+    ViewData["Title"] = "Global Appointments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="fa-solid fa-calendar-check text-warning me-2"></i> Global Appointments</h2>
+</div>
+
+<div class="table-container shadow-sm border-0">
+    <div class="table-responsive p-3">
+        <table class="table table-custom align-middle table-hover">
+            <thead>
+                <tr>
+                    <th><i class="fa-regular fa-clock me-1"></i> Date & Time</th>
+                    <th><i class="fa-solid fa-bed-pulse me-1"></i> Patient</th>
+                    <th><i class="fa-solid fa-user-doctor me-1"></i> Doctor</th>
+                    <th><i class="fa-solid fa-microscope me-1"></i> Specialization</th>
+                    <th><i class="fa-solid fa-circle-half-stroke me-1"></i> Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var appt in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-dark">@appt.AppointmentDate.ToString("MMM dd, yyyy")</div>
+                            <div class="text-muted small">@appt.AppointmentDate.ToString("hh:mm tt")</div>
+                        </td>
+                        <td>
+                            <span class="fw-bold">@appt.Patient?.User?.FullName</span>
+                        </td>
+                        <td>
+                            <span class="fw-bold text-primary">Dr. @appt.Doctor?.User?.FullName</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">@appt.Doctor?.Specialization?.Name</span>
+                        </td>
+                        <td>
+                            <span class="badge @(appt.Status == HospitalSystem.Models.AppointmentStatus.Pending ? "bg-warning text-dark" : 
+                                               appt.Status == HospitalSystem.Models.AppointmentStatus.Confirmed ? "bg-info" : 
+                                               appt.Status == HospitalSystem.Models.AppointmentStatus.Completed ? "bg-success" : "bg-danger") shadow-sm">
+                                @appt.Status
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

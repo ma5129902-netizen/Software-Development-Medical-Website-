@@ -1,0 +1,41 @@
+@model HospitalSystem.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-wrapper">
+    <div class="col-md-5 col-lg-4">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <h3><i class="fa-solid fa-user-lock"></i> Welcome Back</h3>
+                <p class="mb-0 text-white-50">Please login to your account</p>
+            </div>
+            <div class="auth-body">
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="Username" class="form-label"><i class="fa-solid fa-user text-muted me-2"></i> Username</label>
+                        <input asp-for="Username" class="form-control form-control-lg" placeholder="Enter username..." />
+                        <span asp-validation-for="Username" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label"><i class="fa-solid fa-lock text-muted me-2"></i> Password</label>
+                        <input asp-for="Password" class="form-control form-control-lg" placeholder="••••••••" />
+                        <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-2 shadow"><i class="fa-solid fa-right-to-bracket"></i> Secure Login</button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-muted fw-bold">New to Medical2026? <a asp-action="Register" class="text-primary text-decoration-none">Create an account</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

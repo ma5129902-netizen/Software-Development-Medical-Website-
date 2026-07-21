@@ -1,0 +1,137 @@
+@model IEnumerable<HospitalSystem.Models.User>
+@{
+    ViewData["Title"] = "Patients List";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="fa-solid fa-hospital-user text-info me-2"></i> Registered Patients</h2>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm mb-4">
+        <i class="fa-solid fa-circle-check me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm mb-4">
+        <i class="fa-solid fa-circle-exclamation me-2"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="table-container shadow-sm border-0">
+    <div class="table-responsive p-3">
+        <table class="table table-custom align-middle table-hover">
+            <thead>
+                <tr>
+                    <th><i class="fa-solid fa-fingerprint me-1"></i> ID</th>
+                    <th><i class="fa-regular fa-user me-1"></i> Patient Name</th>
+                    <th><i class="fa-solid fa-right-to-bracket me-1"></i> Login Credentials</th>
+                    <th><i class="fa-solid fa-envelope me-1"></i> Contact Info</th>
+                    <th><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var patient in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-muted">#@patient.Id</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-info text-white rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 40px; height: 40px; font-weight: bold;">
+                                    @((patient.FullName.Length > 0) ? patient.FullName.Substring(0, 1).ToUpper() : "?")
+                                </div>
+                                <span class="fw-bold text-dark">@patient.FullName</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bg-light p-2 rounded border border-warning" style="display:inline-block; min-width: 180px;">
+                                <div class="fw-bold text-dark small mb-1"><i class="fa-solid fa-at text-muted w-15px"></i> User: <span class="text-primary">@patient.Username</span></div>
+                                <div class="fw-bold text-dark small"><i class="fa-solid fa-key text-muted w-15px"></i> Pass: <span class="text-danger">@patient.PasswordHash</span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="small">
+                                @if(!string.IsNullOrEmpty(patient.Email)) { <div><i class="fa-regular fa-envelope text-muted"></i> @patient.Email</div> }
+                                @if(!string.IsNullOrEmpty(patient.Phone)) { <div><i class="fa-solid fa-phone text-muted"></i> @patient.Phone</div> }
+                                @if(string.IsNullOrEmpty(patient.Email) && string.IsNullOrEmpty(patient.Phone)) { <span class="fst-italic text-muted">No contact info</span> }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-2" style="max-width: 150px;">
+                                <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#credModal-@patient.Id">
+                                    <i class="fa-solid fa-user-lock"></i> Credentials
+                                </button>
+                                @if (!string.IsNullOrEmpty(patient.PatientProfile?.MedicalHistory))
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#historyModal-@patient.Id">
+                                        <i class="fa-solid fa-eye"></i> View History
+                                    </button>
+                                }
+                            </div>
+
+                            <!-- Credentials Modal -->
+                            <div class="modal fade" id="credModal-@patient.Id" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content border-0 shadow">
+                                        <div class="modal-header bg-warning text-dark border-0">
+                                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-lock"></i> Edit Credentials</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form asp-action="UpdateCredentials" method="post">
+                                            <div class="modal-body p-4">
+                                                <input type="hidden" name="id" value="@patient.Id" />
+                                                <input type="hidden" name="returnUrl" value="/Admin/Patients" />
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Patient Name</label>
+                                                    <input type="text" class="form-control bg-light" value="@patient.FullName" disabled />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold text-primary">Username</label>
+                                                    <input type="text" name="username" class="form-control border-primary" value="@patient.Username" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold text-danger">Password</label>
+                                                    <input type="text" name="password" class="form-control border-danger" value="@patient.PasswordHash" required />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0 bg-light">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-warning fw-bold text-dark"><i class="fa-solid fa-save"></i> Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- History Modal -->
+                            @if (!string.IsNullOrEmpty(patient.PatientProfile?.MedicalHistory))
+                            {
+                                <div class="modal fade" id="historyModal-@patient.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-info text-white border-0">
+                                                <h5 class="modal-title"><i class="fa-solid fa-file-medical"></i> @patient.FullName's Medical History</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body p-4">
+                                                <p class="bg-light p-3 rounded">@patient.PatientProfile.MedicalHistory</p>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

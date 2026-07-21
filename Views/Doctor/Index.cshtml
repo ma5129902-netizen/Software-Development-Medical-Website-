@@ -1,0 +1,138 @@
+@model IEnumerable<HospitalSystem.Models.Appointment>
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-5 mt-3">
+    <h2 class="fw-bold"><i class="fa-solid fa-calendar-check text-success me-2"></i> My Schedule</h2>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card shadow-sm border-0 bg-white rounded-4 text-center p-5 mt-4">
+        <div class="card-body">
+            <i class="fa-solid fa-mug-hot fa-5x text-muted opacity-50 mb-3"></i>
+            <h4 class="fw-bold text-dark">Your schedule is clear</h4>
+            <p class="text-muted">You have no upcoming appointments at the moment.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-container">
+        <div class="table-responsive p-3">
+            <table class="table table-custom align-middle">
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;"><i class="fa-regular fa-calendar me-1"></i> Date & Time</th>
+                        <th><i class="fa-regular fa-user me-1"></i> Patient Name</th>
+                        <th style="width: 30%;"><i class="fa-solid fa-notes-medical me-1"></i> Symptoms / Notes</th>
+                        <th><i class="fa-solid fa-circle-half-stroke me-1"></i> Status</th>
+                        <th><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var appt in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">@appt.AppointmentDate.ToString("MMM dd, yyyy")</div>
+                                <div class="text-muted small">@appt.AppointmentDate.ToString("hh:mm tt")</div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 40px; height: 40px; font-weight: bold;">
+                                        @((appt.Patient?.User?.FullName?.Length > 0) ? appt.Patient.User.FullName.Substring(0, 1).ToUpper() : "?")
+                                    </div>
+                                    <span class="fw-bold text-dark">@appt.Patient?.User?.FullName</span>
+                                </div>
+                            </td>
+                            <td>
+                                @if (string.IsNullOrEmpty(appt.Notes))
+                                {
+                                    <span class="text-muted fst-italic">No notes provided</span>
+                                }
+                                else
+                                {
+                                    <span class="text-dark">@appt.Notes</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @(appt.Status == HospitalSystem.Models.AppointmentStatus.Pending ? "bg-warning text-dark" : 
+                                                   appt.Status == HospitalSystem.Models.AppointmentStatus.Confirmed ? "bg-info" : 
+                                                   appt.Status == HospitalSystem.Models.AppointmentStatus.Completed ? "bg-success" : "bg-danger") shadow-sm px-3 py-2" id="status-badge-@appt.Id">
+                                    @appt.Status
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center bg-light p-1 rounded-3 border">
+                                    <select class="form-select form-select-sm border-0 bg-transparent shadow-none fw-bold text-primary status-select" style="cursor: pointer;" data-appointment-id="@appt.Id">
+                                        @foreach (var status in Enum.GetValues(typeof(HospitalSystem.Models.AppointmentStatus)))
+                                        {
+                                            if ((HospitalSystem.Models.AppointmentStatus)status == appt.Status)
+                                            {
+                                                <option value="@status" selected>Change to @status</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@status">Change to @status</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selects = document.querySelectorAll('.status-select');
+            
+            selects.forEach(select => {
+                select.addEventListener('change', function () {
+                    const appointmentId = this.getAttribute('data-appointment-id');
+                    const newStatus = this.value;
+                    const statusText = this.options[this.selectedIndex].text.replace('Change to ', '');
+
+                    // Change visual style immediately for UX, revert if failed
+                    const badge = document.getElementById(`status-badge-${appointmentId}`);
+                    const oldClasses = badge.className;
+                    const oldText = badge.textContent;
+                    
+                    badge.textContent = statusText;
+                    badge.className = badge.className.replace(/\bbg-\w+/g, '').replace('text-dark', '');
+                    
+                    if(statusText === 'Pending') badge.classList.add('bg-warning', 'text-dark');
+                    else if(statusText === 'Confirmed') badge.classList.add('bg-info');
+                    else if(statusText === 'Completed') badge.classList.add('bg-success');
+                    else if(statusText === 'Cancelled') badge.classList.add('bg-danger');
+
+                    fetch(`/Doctor/UpdateAppointmentStatus`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `appointmentId=${appointmentId}&status=${newStatus}`
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to update status.');
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        // Revert
+                        badge.className = oldClasses;
+                        badge.textContent = oldText;
+                        this.value = oldText; // revert select
+                        alert('An error occurred while updating the status.');
+                    });
+                });
+            });
+        });
+    </script>
+}
