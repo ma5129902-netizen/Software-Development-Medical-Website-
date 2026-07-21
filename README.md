@@ -19,6 +19,20 @@ Medical2026 is a healthcare management system developed using ASP.NET Core MVC. 
 - CSS
 - JavaScript
 - Bootstrap
+  
+## Demo Accounts 
+
+### Admin
+Email: admin 
+Password: admin123
+
+### Doctor
+Email: doctor
+Password: doctor123
+
+### Patient
+Email: patient1
+Password: patient123
 
 ## Team
 Developed as a Software Development course project.
